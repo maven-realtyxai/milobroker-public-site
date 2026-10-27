@@ -1,0 +1,87 @@
+/* Shared theme and accessible defaults. Only src/ is scanned for Tailwind classes. */
+@import "tailwindcss" source("../");
+
+@theme {
+  --font-sans: "Segoe UI", Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --color-forest: #205641;
+  --color-forest-dark: #143d2d;
+  --color-ink: #203d32;
+  --color-muted: #56665c;
+  --color-cream: #fbfcf8;
+  --color-sage: #f0f3e9;
+  --color-line: #d9e2d3;
+  --color-olive: #526c40;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth scroll-pt-24;
+  }
+  body {
+    @apply m-0 bg-cream font-sans text-base leading-relaxed text-ink antialiased;
+  }
+  h1 {
+    @apply text-[clamp(2.5rem,5vw,4rem)] leading-[1.1] font-semibold tracking-tight;
+  }
+  h2 {
+    @apply mb-4 text-[clamp(2rem,3.5vw,3rem)] leading-tight font-semibold tracking-tight;
+  }
+  h3 {
+    @apply text-2xl leading-tight font-semibold tracking-tight sm:text-3xl;
+  }
+  h4 {
+    @apply text-lg leading-snug font-semibold;
+  }
+  p {
+    @apply text-muted;
+  }
+  button,
+  a,
+  summary {
+    @apply touch-manipulation;
+  }
+  button,
+  summary {
+    @apply cursor-pointer;
+  }
+  a,
+  button {
+    @apply transition-colors motion-reduce:transition-none;
+  }
+  :is(a, button, summary, [tabindex]):focus-visible {
+    @apply outline-3 outline-offset-4 outline-amber-700;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .page-container {
+    @apply mx-auto w-[calc(100%_-_2rem)] max-w-7xl sm:w-[calc(100%_-_3rem)] lg:w-[calc(100%_-_4rem)];
+  }
+  .section-spacing {
+    @apply py-6;
+  }
+  .button {
+    @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-lg bg-forest px-6 py-3 text-center text-base leading-snug font-semibold text-white hover:bg-forest-dark;
+  }
+  .brand {
+    @apply whitespace-nowrap text-2xl font-bold tracking-tight sm:text-3xl;
+  }
+  .eyebrow {
+    @apply mb-2 text-sm font-bold tracking-widest text-olive;
+  }
+  .nav-link {
+    @apply inline-flex min-h-11 items-center rounded px-2 text-base font-medium hover:text-forest hover:underline hover:underline-offset-4;
+  }
+}
