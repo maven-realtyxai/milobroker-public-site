@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:4173. To check a production build:
+Open http://127.0.0.1:4173. To check build:
 
 ```sh
 npm run build
