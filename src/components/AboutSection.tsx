@@ -15,7 +15,7 @@ export function AboutSection() {
         <h2 id="about-title" className="sr-only">
           {common.servicesTitle}
         </h2>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-2">
           {serviceOrder.map((key) => {
             const service = platformServices[key];
             return (

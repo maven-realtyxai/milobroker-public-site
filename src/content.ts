@@ -44,7 +44,7 @@ export const common = {
   chat: "Chat on WhatsApp",
   newTab: " (opens in a new tab)",
   whatsAppNewTab: " on WhatsApp (opens in a new tab)",
-  servicesTitle: "Post, search and promote",
+  servicesTitle: "Post & Search",
 };
 
 /** Used by HeroSection; image paths point to the three approved, illustrative SVGs. */
@@ -52,9 +52,9 @@ export const hero = {
   eyebrow: "PROPERTY SEARCH, MADE CONVERSATIONAL",
   heading: "No extra app.",
   accent: "Just WhatsApp.",
-  promise: "Post · Search · Promote",
+  promise: "Post · Search",
   introduction: "Find a home, share a room, post a property, or introduce a new project with a simple WhatsApp message.",
-  description: "brings tenants, buyers, owners, agents, PG operators, and builders together in one place. Just tell us what you need or what you want to share, along with the area, budget, or property details. No extra app to learn—start with a simple hello.",
+  description: "brings tenants, buyers, owners, agents, PG operators together in one place. Just tell us what you need or what you want to share, along with the area, budget, or property details. No extra app to learn—start with a simple hello.",
   guideLink: "See how it works",
   carouselLabel: `${brandName} audience conversations`,
   previewLabel: `Illustrative WhatsApp conversation with ${brandName}`,
@@ -80,11 +80,11 @@ export const heroSlides = [
     image: new URL("./resources/images/milobroker-search.svg", import.meta.url).pathname,
     imageAlt: `Sample ${brandName} chat: a tenant searches for a 2 BHK in Indiranagar and receives an illustrative property card with a Contact owner row.`,
   },
-  {
-    label: "Builders",
-    image: new URL("./resources/images/milobroker-promote.svg", import.meta.url).pathname,
-    imageAlt: `Sample ${brandName} chat: ABC Builders shares 13-floor towers near the international airport, two photos, and receives an ad-saved confirmation.`,
-  },
+  // {
+  //   label: "Builders",
+  //   image: new URL("./resources/images/milobroker-promote.svg", import.meta.url).pathname,
+  //   imageAlt: `Sample ${brandName} chat: ABC Builders shares 13-floor towers near the international airport, two photos, and receives an ad-saved confirmation.`,
+  // },
 ];
 
 /** Used by HowItWorksSection around the role guides below. */
@@ -119,10 +119,18 @@ export const faqContent = {
 
 /** Used by SiteFooter and DisclaimerSection. The year is supplied by the component. */
 export const footer = {
-  tagline: "Post, Search & Promote. All through WhatsApp.",
+  tagline: "Post, Search. All through WhatsApp.",
   copyright: `All rights reserved. © {year} ${brandName} owned by Maven RealtyxAI (OPC) Pvt Ltd.`,
   disclaimerTitle: "Disclaimer",
-  disclaimer: `${brandName} is a platform that helps users begin property-related conversations and discover advertised properties, rooms, PG accommodation and projects. ${brandName} is not the owner, seller, buyer, tenant, agent, broker, builder or developer of any property, and is not a party to transactions discussed between users. Property details, availability, prices, offers, images and claims are provided by the people or businesses that share them. Users should verify all information, permissions, documents and terms independently before making a decision or entering into an agreement. ${brandName} does not guarantee listings, outcomes, offers or services, and cannot mediate or resolve disputes between users and property advertisers.`,
+  disclaimer: `${brandName} is a platform that helps users begin property-related 
+      conversations and discover advertised properties, rooms, PG accommodation.
+       ${brandName} is not the owner, seller, buyer, tenant, agent, broker of any property, and is not a party 
+       to transactions discussed between users. Property details, availability, prices, offers, images and claims are 
+       provided by the people or businesses that share them. 
+       Users should verify all information, permissions, documents and terms 
+       independently before making a decision or entering into an agreement. 
+       ${brandName} does not guarantee listings, outcomes, offers or services, 
+       and cannot mediate or resolve disputes between users and property advertisers.`,
 };
 
 /** Used by the header, hero and contact section. */
@@ -152,20 +160,20 @@ export const platformServices = {
     enquiry:
       `Hi ${brandName}, I’m looking for a home or PG room. I’d like to share my preferences and learn how to get started.`,
   },
-  promote: {
-    name: "Promote",
-    audience: "Builders",
-    headline: "Give your next project the spotlight.",
-    description:
-      `Every project has a story. Share yours and explore ways to introduce it to prospective buyers through ${brandName}.`,
-    cta: "Introduce your project",
-    enquiry:
-      `Hi ${brandName}, I’d like to promote a property project. Can we discuss the available options and next steps?`,
-  },
+  // promote: {
+  //   name: "Promote",
+  //   audience: "Builders",
+  //   headline: "Give your next project the spotlight.",
+  //   description:
+  //     `Every project has a story. Share yours and explore ways to introduce it to prospective buyers through ${brandName}.`,
+  //   cta: "Introduce your project",
+  //   enquiry:
+  //     `Hi ${brandName}, I’d like to promote a property project. Can we discuss the available options and next steps?`,
+  // },
 };
 
 /** Marketing order follows the platform promise: Post. Search. Promote. */
-export const serviceOrder = ["post", "search", "promote"] as const;
+export const serviceOrder = ["post", "search"] as const;
 
 /** One audience guide shown by the accessible role tabs. */
 export interface Journey {
@@ -236,32 +244,32 @@ export const journeys: [Journey, ...Journey[]] = [
     example: platformServices.search.enquiry,
     cta: platformServices.search.cta,
   },
-  {
-    id: "builder",
-    service: "promote",
-    label: "Builders",
-    icon: "building",
-    intent: "Introduce your project",
-    title: "Make your project part of the conversation.",
-    description:
-      `Introduce the vision behind your development. Share your project and explore how ${brandName} can help you tell its story.`,
-    steps: [
-      {
-        title: "Introduce your project",
-        body: "Share the project name, location, property types, current inventory and expected completion date.",
-      },
-      {
-        title: "Discuss your promotion goals",
-        body: "Tell us what makes your project stand out and who you’d like to reach. Explore the available promotion options together.",
-      },
-      {
-        title: "Confirm your campaign details",
-        body: "Have your brochure, visuals and project information ready. Discuss the scope and next steps before moving ahead.",
-      },
-    ],
-    example: platformServices.promote.enquiry,
-    cta: platformServices.promote.cta,
-  },
+  // {
+  //   id: "builder",
+  //   service: "promote",
+  //   label: "Builders",
+  //   icon: "building",
+  //   intent: "Introduce your project",
+  //   title: "Make your project part of the conversation.",
+  //   description:
+  //     `Introduce the vision behind your development. Share your project and explore how ${brandName} can help you tell its story.`,
+  //   steps: [
+  //     {
+  //       title: "Introduce your project",
+  //       body: "Share the project name, location, property types, current inventory and expected completion date.",
+  //     },
+  //     {
+  //       title: "Discuss your promotion goals",
+  //       body: "Tell us what makes your project stand out and who you’d like to reach. Explore the available promotion options together.",
+  //     },
+  //     {
+  //       title: "Confirm your campaign details",
+  //       body: "Have your brochure, visuals and project information ready. Discuss the scope and next steps before moving ahead.",
+  //     },
+  //   ],
+  //   example: platformServices.promote.enquiry,
+  //   cta: platformServices.promote.cta,
+  // },
 ];
 
 /** Question and answer pairs used by FaqSection; {phone} is replaced with the current API number. */
@@ -278,10 +286,10 @@ export const faqs = [
     "Can I post a property or PG room?",
     "Yes. Owners, agents and PG operators can post properties and available rooms. For PG (paying guest) accommodation, share photos, room-sharing options, facilities, meal availability, monthly rent and deposit. Make sure you have permission to list the space.",
   ],
-  [
-    "How can builders promote a project?",
-    "Share your project details and the audience you’d like to reach. We’ll guide the conversation around available promotion options and what to prepare next.",
-  ],
+  // [
+  //   "How can builders promote a project?",
+  //   "Share your project details and the audience you’d like to reach. We’ll guide the conversation around available promotion options and what to prepare next.",
+  // ],
   [
     "What if WhatsApp does not open?",
     `On a phone, check that WhatsApp is installed. On a computer, sign in to WhatsApp Web. You can also save +{phone} and start a conversation from WhatsApp.`,

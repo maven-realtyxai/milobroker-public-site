@@ -53,7 +53,7 @@ export function HowItWorksSection() {
         <p>{guide.introduction}</p>
       </div>
       <div
-        className="mb-6 grid grid-cols-3 gap-1 rounded-xl border border-line bg-sage p-1 sm:gap-2 sm:p-2"
+        className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-line bg-sage p-1 sm:gap-2 sm:p-2"
         role="tablist"
         aria-label={guide.tabLabel}
       >

@@ -11,7 +11,7 @@ export function SiteHeader() {
         {/* Native anchor returns to the hero and closes the mobile menu. */}
         <a className="brand flex items-center" href="#home" aria-label={navigation.homeLabel} onClick={() => setOpen(false)}>
           <img src={brandIcon} width="30" height="30" alt="" />
-          <span className="px-2">{brandName}</span>
+          <span className="px-2">{brandName} <span className="text-xs">(Prototype)</span></span>
         </a>
         {/* Click, Enter or Space toggles the mobile navigation. */}
         <button ref={menuButton} type="button" className="inline-flex min-h-11 items-center rounded-lg border border-line px-3 py-2 text-base lg:hidden"
