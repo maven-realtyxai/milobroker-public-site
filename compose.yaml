@@ -1,0 +1,16 @@
+# Local rehearsal only. Bind to loopback so the site is accessible on this PC.
+services:
+  site:
+    build:
+      context: .
+    image: milobroker-public-site:local
+    ports:
+      - "127.0.0.1:8080:8080"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+

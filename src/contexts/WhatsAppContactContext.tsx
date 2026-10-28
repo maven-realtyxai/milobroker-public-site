@@ -11,7 +11,9 @@ export function WhatsAppContactProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const controller = new AbortController();
     // Stop a slow API after five seconds; navigation also cancels the request.
-    const timeout = window.setTimeout(() => controller.abort(), 10000);
+    // This is non-blocking: links render immediately with the fallback number and
+    // update only if the fetch returns quickly, so a slow/failed API never delays paint.
+    const timeout = window.setTimeout(() => controller.abort(), 5000);
     void fetchContact(controller.signal).then((number) => {
       if (!controller.signal.aborted) setPhoneNumber(number);
       window.clearTimeout(timeout);

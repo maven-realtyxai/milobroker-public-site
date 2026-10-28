@@ -63,7 +63,7 @@ export function HowItWorksSection() {
           const Icon = journeyIcons[item.icon];
           return (
             <button
-              className="flex min-h-24 min-w-0 flex-col items-center justify-center gap-2 rounded-lg px-2 py-4 text-center text-base font-semibold text-forest transition-none hover:bg-line aria-selected:bg-forest aria-selected:text-white sm:flex-row sm:justify-start sm:gap-3 sm:px-4 sm:text-left lg:px-5"
+              className="flex min-h-24 min-w-0 flex-col items-center justify-center gap-2 rounded-lg px-2 py-4 text-center text-lg font-semibold text-forest transition-none hover:bg-line aria-selected:bg-forest aria-selected:text-white sm:flex-row sm:justify-start sm:gap-3 sm:px-4 sm:text-left lg:px-5"
               key={item.id}
               // React calls this on attachment/detachment; null clears the corresponding DOM reference.
               ref={(element) => {
@@ -87,7 +87,7 @@ export function HowItWorksSection() {
               />
               <span>
                 {item.label}
-                <span className="mt-1 hidden text-sm font-normal md:block">
+                <span className="mt-1 hidden text-lg font-normal md:block">
                   {item.intent}
                 </span>
               </span>
@@ -108,14 +108,14 @@ export function HowItWorksSection() {
           {selected === index && (
             <div className="grid gap-10 rounded-2xl border border-line bg-white p-5 sm:p-6 lg:grid-cols-2 lg:gap-12 lg:p-6">
               <div className="[&>h3]:mt-3 [&>h3]:mb-4 [&>h3]:max-w-[28ch]">
-                <span className="text-sm font-semibold tracking-widest text-olive">
+                <span className="text-lg font-semibold tracking-widest text-olive">
                   {guide.forRole.replace("{role}", journey.label.toUpperCase())}
                 </span>
                 <h3>{journey.title}</h3>
-                <p className="text-base leading-relaxed">
+                <p className="text-lg leading-relaxed">
                   {journey.description}
                 </p>
-                <ol className="mt-8 space-y-6">
+                <ol className="mt-8 space-y-6 text-lg">
                   {/* Ordered content drives the visible steps; decorative numbers do not duplicate list semantics. */}
                   {journey.steps.map((step, stepIndex) => (
                     <li key={step.title} className="flex gap-4">
@@ -134,10 +134,10 @@ export function HowItWorksSection() {
                 </ol>
               </div>
               <div className="flex min-w-0 flex-col gap-6">
-                <div className="rounded-xl border border-line bg-sage p-5 sm:p-6 [&_blockquote]:rounded-xl [&_blockquote]:rounded-bl-none [&_blockquote]:border [&_blockquote]:border-line [&_blockquote]:bg-white [&_blockquote]:p-5 [&_blockquote]:text-base [&_blockquote]:leading-relaxed [&_.button]:w-full">
+                <div className="rounded-xl border border-line bg-sage p-5 sm:p-6 [&_blockquote]:rounded-xl [&_blockquote]:rounded-bl-none [&_blockquote]:border [&_blockquote]:border-line [&_blockquote]:bg-white [&_blockquote]:p-5 [&_blockquote]:text-lg [&_blockquote]:leading-relaxed [&_.button]:w-full">
                   <p className="eyebrow">{guide.messageLabel}</p>
                   <blockquote>{journey.example}</blockquote>
-                  <p className="my-5 text-sm leading-relaxed">
+                  <p className="my-5 text-2sm leading-relaxed">
                     {guide.messageHelp}
                   </p>
                   {/* Click opens this role’s exact example in WhatsApp. Encoding is centralized; nothing is sent here. */}
@@ -176,7 +176,7 @@ export function HowItWorksSection() {
                     </video>
                   </div>
                 ) : (
-                  <div className="flex flex-wrap items-center gap-4 rounded-xl border border-dashed border-line bg-cream p-5 [&_strong]:text-base [&_p]:mt-2 [&_p]:text-sm [&_p]:leading-relaxed">
+                  <div className="flex flex-wrap items-center gap-4 rounded-xl border border-dashed border-line bg-cream p-5 [&_strong]:text-base [&_p]:mt-2 [&_p]:text-base [&_p]:leading-relaxed">
                     <span
                       className="grid size-11 shrink-0 place-items-center rounded-full bg-sage text-2xl text-olive"
                       aria-hidden="true"

@@ -94,6 +94,11 @@ variables: these are public build-time settings. Old Express `DATABASE_URL`,
 
 ## Deploy
 
+For a local Docker rehearsal, run `docker compose up -d --build --wait` and open
+http://127.0.0.1:8080. Docker Desktop must be running with Linux containers.
+See [the deployment workshop](docs/DEPLOYMENT.md) for commands, configuration
+limitations and the staged AWS/domain setup plan.
+
 Run `npm ci` and `npm run build`, then serve **dist/** from a static web host or your
 Java server. `npm run preview` is a local build check, not the production server.
 This site uses native section anchors and needs no router fallback rules. Configure

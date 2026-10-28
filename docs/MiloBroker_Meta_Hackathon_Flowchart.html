@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MiloBroker × Meta Global AI Developer Hackathon — Flowchart & System Design</title>
+<meta name="description" content="MiloBroker prototype flowchart and system design for Meta Global AI Developer Hackathon — Post. Search. Promote. via WhatsApp + Meta AI.">
+<!-- Mermaid is docs-only and not part of the production SPA bundle.
+     Production site is local-only (no CDN): see src/services/contact.ts for the sole fetch.
+     This flowchart loads mermaid locally; CDN is disabled to keep the repo offline-first.
+     To render diagrams: place mermaid.min.js at docs/assets/mermaid.min.js
+     (e.g. `npm pack mermaid` or copy from `node_modules/mermaid/dist/mermaid.min.js`).
+     Without it, the <pre class="mermaid"> blocks remain readable as plain text (see fallback below). -->
+<script src="./assets/mermaid.min.js" onerror="this.remove()"></script>
+<style>
+  :root{
+    --forest:#1b4231; --forest-2:#143426; --cream:#fdf8ee; --sage:#e8ece0; --line:#ddd8c8;
+    --olive:#6b7a4a; --olive-2:#55613c; --sand:#f5efe0; --ink:#1a1a1a; --muted:#6b6b6b;
+    --blue:#1a6b8a; --amber:#8a6a1a;
+    --radius:16px; --radius-lg:22px; --shadow:0 8px 32px rgba(27,66,49,.10); --shadow-lg:0 16px 48px rgba(27,66,49,.14);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; font-family:ui-sans-system,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--cream); color:var(--ink); line-height:1.6; -webkit-font-smoothing:antialiased}
+  a{color:var(--forest); text-underline-offset:3px}
+  .top{position:sticky; top:0; z-index:40; backdrop-filter:blur(10px); background:rgba(253,248,238,.92); border-bottom:1px solid var(--line)}
+  .top-inner{max-width:1180px; margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.02em; color:var(--forest)}
+  .brand svg{width:28px; height:28px}
+  .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--line); background:white}
+  .pill.meta{background:var(--forest); color:white; border-color:var(--forest)}
+  .pill.warn{background:#fff4d6; border-color:#e8d9a0; color:#6b5a1a}
+  .nav{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+  .nav a{padding:8px 12px; border-radius:999px; background:white; border:1px solid var(--line); font-size:13px; font-weight:600; text-decoration:none}
+  .nav a:hover{background:var(--sage)}
+  .hero{max-width:1180px; margin:0 auto; padding:36px 20px 18px}
+  .hero-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:22px; align-items:start}
+  @media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+  .eyebrow{font-size:12px; font-weight:800; letter-spacing:.14em; color:var(--olive); margin:0 0 8px}
+  h1{font-size:42px; line-height:1.05; margin:0; color:var(--forest); letter-spacing:-.02em}
+  h1 span{color:var(--olive)}
+  .lead{font-size:18px; color:#2a2a2a; margin:12px 0 0; max-width:62ch}
+  .hero-card{background:white; border:1px solid var(--line); border-radius:var(--radius-lg); padding:18px; box-shadow:var(--shadow)}
+  .hero-card h3{margin:0 0 8px; font-size:15px; color:var(--forest)}
+  .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px}
+  .kpi{background:var(--sage); border:1px solid var(--line); border-radius:14px; padding:12px; text-align:center}
+  .kpi strong{display:block; font-size:18px; color:var(--forest)}
+  .kpi span{font-size:12px; color:var(--muted); font-weight:600}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+  .badge{padding:7px 10px; border-radius:999px; background:var(--forest); color:white; font-size:12px; font-weight:700}
+  .badge.alt{background:white; color:var(--forest); border:1px solid var(--line)}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 20px}
+  section{padding:26px 0}
+  .card{background:white; border:1px solid var(--line); border-radius:var(--radius-lg); box-shadow:var(--shadow); overflow:hidden}
+  .card-head{padding:18px 20px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:linear-gradient(180deg,white, #fdfaf0)}
+  .card-head h2{margin:0; font-size:20px; color:var(--forest); letter-spacing:-.01em}
+  .card-head p{margin:2px 0 0; color:var(--muted); font-size:13px}
+  .card-body{padding:18px 20px}
+  h3.sec{font-size:14px; letter-spacing:.10em; text-transform:uppercase; color:var(--olive); margin:22px 0 10px}
+  h3.sec:first-child{margin-top:0}
+  .mermaid-wrap{background:#fbfbf7; border:1px solid var(--line); border-radius:14px; padding:14px; overflow:auto; -webkit-overflow-scrolling:touch}
+  .mermaid{font-size:13px}
+  .legend{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0}
+  .legend span{font-size:11px; font-weight:700; padding:5px 8px; border-radius:999px; border:1px solid var(--line); background:white}
+  .legend .l-forest{background:var(--forest); color:white; border-color:var(--forest)}
+  .legend .l-sage{background:var(--sage)}
+  .legend .l-blue{background:#e6f0f5; border-color:#c2d9e6}
+  .legend .l-amber{background:#fff4d6; border-color:#e8d9a0}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .grid3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px}
+  @media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+  .mini{border:1px solid var(--line); border-radius:14px; padding:14px; background:white}
+  .mini h4{margin:0 0 6px; font-size:14px; color:var(--forest)}
+  .mini p{margin:0; font-size:13px; color:#333}
+  .tag{font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:var(--sage); border:1px solid var(--line); color:var(--olive)}
+  table{width:100%; border-collapse:separate; border-spacing:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:13px; background:white}
+  th{background:var(--forest); color:white; text-align:left; padding:10px 12px; font-size:12px; letter-spacing:.04em}
+  td{padding:10px 12px; border-top:1px solid var(--line); vertical-align:top}
+  tr:nth-child(even) td{background:#fdfaf0}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; background:var(--sage); padding:2px 6px; border-radius:6px; border:1px solid var(--line)}
+  .callout{border-left:4px solid var(--forest); background:var(--sage); padding:12px 14px; border-radius:10px; font-size:13px}
+  .callout.amber{border-left-color:#c9a000; background:#fff8db}
+  .callout.blue{border-left-color:var(--blue); background:#eef6fa}
+  .steps{counter-reset:step}
+  .steps li{counter-increment:step; list-style:none; position:relative; padding-left:34px; margin:10px 0}
+  .steps li::before{content:counter(step); position:absolute; left:0; top:0; width:24px; height:24px; border-radius:50%; background:var(--forest); color:white; display:grid; place-items:center; font-size:11px; font-weight:800}
+  footer{max-width:1180px; margin:0 auto; padding:28px 20px 40px; color:var(--muted); font-size:12px; text-align:center}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 4 L26 13 L26 26 H20 V18 H12 V26 H6 V13 Z" fill="#1b4231" stroke="#1b4231" stroke-width="1.5" stroke-linejoin="round"/><rect x="10" y="11" width="12" height="7" rx="1" fill="#fdf8ee"/></svg>
+      MiloBroker
+      <span class="pill meta">Meta Global AI Developer Hackathon</span>
+      <span class="pill warn">Post · Search · Promote — No extra app. Just WhatsApp.</span>
+    </div>
+    <nav class="nav" aria-label="Flowchart sections">
+      <a href="#current">Current</a>
+      <a href="#prototype">P0 Prototype</a>
+      <a href="#meta">Meta × MiloBroker</a>
+      <a href="#system">System Design</a>
+      <a href="#personas">Persona Flows</a>
+      <a href="#contracts">Contracts</a>
+    </nav>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">FLOWCHART &amp; SYSTEM DESIGN — META GLOBAL AI DEVELOPER HACKATHON</p>
+      <h1>No extra app.<br><span>Just WhatsApp.</span></h1>
+      <p class="lead">MiloBroker turns informal WhatsApp chats into <strong>structured listings, ranked search, and trackable leads</strong>. For the <strong>Meta Global AI Developer Hackathon</strong> we ship a <em>deterministic, demo-reliable P0 core</em> and layer <strong>Meta Muse (closed-weight, via Meta Model API + WhatsApp Cloud API)</strong> as the conversational intelligence — without risking the golden path. <strong>No Llama open weights.</strong></p>
+      <div class="badges">
+        <span class="badge">P0: Deterministic · Reliable · Judged Live</span>
+        <span class="badge alt">P1 / Meta: Muse Spark · Muse Spark 1.1 · WhatsApp Cloud API — Muse-only</span>
+        <span class="badge alt">File: /hackathon/MiloBroker_Meta_Hackathon_Flowchart.html</span>
+      </div>
+      <div class="callout amber" style="margin-top:14px"><strong>Hackathon rule respected + Muse-only constraint:</strong> Roadmap P2 defers vector DB / agent until P0 is rehearsed. This design keeps <em>deterministic extraction → Search API → Postgres/in-memory</em> as the judged path, and isolates <strong>Meta Muse (Spark / Spark 1.1, closed-weight via Meta Model API)</strong> as the <em>enhancement lane</em> (ambiguity recovery, voice transcript → structured slots, image understanding, policy-safe moderation). <strong>Zero Llama open-weight inference.</strong></div>
+    </div>
+    <div class="hero-card">
+      <h3>Why MiloBroker × Meta wins</h3>
+      <p style="margin:0; font-size:13px; color:#333">Judges score <strong>product clarity → working proof → technical credibility</strong>. WhatsApp is where India already negotiates rent. Meta provides the transport <em>and</em> the intelligence.</p>
+      <div class="kpis">
+        <div class="kpi"><strong>5 min</strong><span>North Star demo</span></div>
+        <div class="kpi"><strong>2–3</strong><span>Ranked results</span></div>
+        <div class="kpi"><strong>1 tap</strong><span>Lead created</span></div>
+      </div>
+      <div style="margin-top:12px; display:grid; gap:8px; font-size:12px">
+        <div><span class="tag">Post</span> Owners / Agents / PG — free · guided draft → active</div>
+        <div><span class="tag">Search</span> Tenants / Buyers — paid · natural language → Search API</div>
+        <div><span class="tag">Promote</span> Builders — premium · <em>disabled in prototype, shown as next</em></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="current">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>1 · Current State — What ships today</h2><p>React 18 + Vite + Tailwind SPA · <code>src/content.ts</code> single source of copy · one optional <code>CONTACT_API_URL</code> fetch</p></div>
+        <span class="pill">Live repo: milobroker-public-site</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid-wrap">
+<pre class="mermaid">
+flowchart LR
+  A["User on MiloBroker SPA<br/>(Hero / About / HowItWorks / FAQ)"] --> B{"Click CTA<br/>Post / Search / Promote"}
+  B --> C["createWhatsAppUrl(message)<br/>src/content.ts"]
+  C --> D["WhatsApp click-to-chat<br/>wa.me/918123995310<br/>+ prefilled text"]
+  D --> E["WhatsApp App / Web<br/>(manual human handling)"]
+  F["Java Backend (optional)<br/>GET /api/contact<br/>{whatsappPhoneNumber,countryCode}"] -.->|"fetchContact()<br/>5s timeout, fallback number"| C
+  style A fill:#1b4231,stroke:#1b4231,color:#fff
+  style D fill:#e8ece0,stroke:#1b4231,color:#1b4231
+  style F fill:#fff4d6,stroke:#c9a000,color:#1a1a1a
+</pre>
+        </div>
+        <div class="legend"><span class="l-forest">SPA</span><span class="l-sage">WhatsApp handoff</span><span class="l-amber">Optional Java</span><span>No DB · No conversation state · No ranking</span></div>
+        <div class="grid3" style="margin-top:14px">
+          <div class="mini"><h4>What works</h4><p>Anchors <code>#home #about #how-it-works #faq</code>, QR via <code>qrcode</code>, fallback number always available. Builds offline.</p></div>
+          <div class="mini"><h4>What’s missing</h4><p>No listing persistence, no ranked search, no lead tracking, no admin, no voice/media, no extraction.</p></div>
+          <div class="mini"><h4>Constraint</h4><p>Keep <code>src/content.ts</code> copy, <code>fallbackWhatsAppNumber</code>, and <code>createWhatsAppUrl</code> — every button/QR/FAQ reuses them.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prototype">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>2 · P0 Hackathon Prototype — Walking Skeleton (Deterministic, Judged Live)</h2><p>Exactly the roadmap architecture · simulator-first so Meta approval never blocks the demo</p></div>
+        <span class="pill">Gates: A Skeleton → B Product proof → C Demo ready</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid-wrap">
+<pre class="mermaid">
+flowchart TB
+  U1["Tenant / Buyer"] & U2["Owner / Agent / PG Operator"]
+  U1 & U2 --> Entry{"Entry"}
+  Entry -->|A| SPA["Public site CTA<br/>opens prototype"]
+  Entry -->|B| WA["WhatsApp (live, if stable)"]
+  Entry -->|C fallback| SIM["WhatsApp-style simulator<br/>(same contracts, zero approval risk)"]
+
+  SPA & WA & SIM --> CONV["Conversation API<br/>POST /api/conversation/message<br/>creates / resumes Session"]
+
+  CONV --> DET["Deterministic extraction<br/>rent/sale · locality · BHK · budget · propertyType<br/>No LLM on P0 — regex + alias map"]
+  DET -->|complete| SRQ["SearchRequest<br/>{locality, budgetMinMax, bhk, listingType, propertyType}"]
+  DET -->|missing| CLAR["One clarifying question<br/>P1-02 Ambiguity recovery"]
+
+  SRQ --> SAPI["Search API<br/>GET /api/search?locality=&bhk=&budget=<br/>Rank seeded + active listings<br/>Conversation NEVER queries DB directly"]
+  SAPI --> DB[("PostgreSQL / PostGIS<br/>or seeded in-memory provider<br/>6+ samples across 2–3 localities")]
+  DB --> RES["SearchResult[]<br/>2–3 cards · illustrative label"]
+
+  RES --> SEL{"Seeker selects card"}
+  SEL --> LEAD["Lead API<br/>POST /api/leads<br/>{listingId, seekerId, query, extractedSlots, ts}"]
+  LEAD --> ADMIN["Minimal Admin<br/>Listings (draft/active/pending) · Leads · Funnel"]
+  ADMIN --> RESET["Reset / Reseed<br/>one command → known seed + clean sessions"]
+
+  U2 --> POST["Guided Post flow<br/>propertyType → location → price → details → confirm"]
+  POST --> DRAFT["ListingDraft (validates required)"]
+  DRAFT --> SUBMIT["Submit → Listing (pending/active)"]
+  SUBMIT --> DB
+
+  CLAR --> CONV
+  RES -->|empty| EMPTY["Empty state: refinement choices<br/>No invented inventory"]
+
+  style CONV fill:#1b4231,stroke:#1b4231,color:#fff
+  style SAPI fill:#1b4231,stroke:#1b4231,color:#fff
+  style LEAD fill:#1b4231,stroke:#1b4231,color:#fff
+  style DET fill:#e8ece0,stroke:#1b4231,color:#1b4231
+  style DB fill:#e6f0f5,stroke:#1a6b8a,color:#1a1a1a
+  style ADMIN fill:#fff4d6,stroke:#c9a000,color:#1a1a1a
+</pre>
+        </div>
+        <div class="legend"><span class="l-forest">API boundary (typed contract)</span><span class="l-sage">Deterministic logic</span><span class="l-blue">Data</span><span class="l-amber">Admin / Ops</span></div>
+        <h3 class="sec">Contracts that must not be bypassed (even in a monolith)</h3>
+        <div class="grid2">
+          <table>
+            <tr><th>Contract</th><th>Shape</th></tr>
+            <tr><td><code>SearchRequest → SearchResult[]</code></td><td>Normalized filters; ranked; only <code>active</code> listings</td></tr>
+            <tr><td><code>CreateListingDraftRequest → ListingDraft</code></td><td>Step-wise, resumable, validates PG sharing/meals/rent/deposit</td></tr>
+            <tr><td><code>SubmitListingRequest → Listing</code></td><td>Confirmation → <code>pending/active</code>, then searchable</td></tr>
+            <tr><td><code>CreateLeadRequest → Lead</code></td><td>Stores listing + seeker + original query + extracted slots + status</td></tr>
+          </table>
+          <div class="callout">Conversation layer <strong>never</strong> accesses storage directly — it calls <code>Search API</code>. Store both <em>original query text</em> and <em>extracted fields</em> so judges see “2 BHK near Whitefield under 45k” → <code>{locality:Whitefield, bhk:2, budget:≤45000, listingType:rent}</code>.</div>
+        </div>
+        <h3 class="sec">Kill-switches rehearsed</h3>
+        <div class="grid3">
+          <div class="mini"><h4>If WhatsApp unstable at 30%</h4><p>Lock to simulator — same contracts, zero approval risk.</p></div>
+          <div class="mini"><h4>If voice fails twice</h4><p>Demo text; show voice as “next”.</p></div>
+          <div class="mini"><h4>If DB/deployment unstable</h4><p>Seeded in-memory provider behind same <code>Search API</code>.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="meta">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>3 · Meta × MiloBroker — Conversational Intelligence Lane (Muse-only)</h2><p>Every AI call uses Meta Muse closed-weight models via Meta Model API — no Llama open weights</p></div>
+        <span class="pill meta">Muse Spark · Spark 1.1 — closed-weight only</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid-wrap">
+<pre class="mermaid">
+flowchart TB
+  subgraph Transport["Transport — Meta WhatsApp Business Platform (Cloud API) — Meta-hosted"]
+    WU["User in WhatsApp"] --> CLOUD["WhatsApp Cloud API<br/>webhook: text / image / audio<br/>voice = audio {id, voice:true} — NO auto text"]
+    CLOUD --> WH["Webhook server<br/>GET /webhook verify · POST /webhook event<br/>HTTPS + signature verify<br/>audio: GET /{media-id} to fetch OGG"]
+    WH --> QUEUE["Queue / idempotency<br/>dedup wamid · 5s ack to Meta"]
+    QUEUE --> CONV2["Conversation Orchestrator"]
+    CONV2 --> SEND["Cloud API SEND<br/>POST /PHONE_ID/messages<br/>text / cards / templates"]
+    SEND --> WU
+  end
+
+  subgraph Intelligence["Intelligence — Meta Muse only (closed-weight via Meta Model API)"]
+    CONV2 --> GUARD1["Muse Safety<br/>input moderation via<br/>Muse system policy"]
+    GUARD1 --> ROUTER{"Router"}
+    ROUTER -->|text, deterministic first| DET2["Deterministic extractor<br/>(P0 — always tried first)"]
+    ROUTER -->|ambiguous / low confidence| MUSE["Meta Muse<br/>Muse Spark 1.1 (flagship reasoning + vision)<br/>Muse Spark (balanced, lower latency)<br/>All via Meta Model API — no open weights"]
+    ROUTER -->|voice note| STT["Voice note (audio/ogg)<br/>Cloud API sends audio id, NOT text<br/>→ download media → Muse transcription<br/>→ transcript → same extractor"]
+    MUSE --> TOOLS["Muse Tool Calling (Meta Model API)<br/>search_properties · create_listing_draft<br/>submit_listing · create_lead · handoff_to_human"]
+    DET2 --> TOOLS
+    TOOLS --> GUARD2["Muse Safety<br/>output moderation via<br/>Muse policy + task scope"]
+    GUARD2 --> SAPI2["Search API / Lead API / Draft API<br/>(same contracts as P0)"]
+  end
+
+  subgraph Data["Data & Trust"]
+    SAPI2 --> PG2[("PostgreSQL<br/>listings · leads · sessions")]
+    PG2 --> VEC{{"Future: pgvector / embeddings<br/>P2 deferred — not in judged demo"}}
+    PG2 --> ADMIN2["Admin · funnel metrics"]
+  end
+
+  style CLOUD fill:#1b4231,stroke:#1b4231,color:#fff
+  style MUSE fill:#1b4231,stroke:#1b4231,color:#fff
+  style TOOLS fill:#e8ece0,stroke:#1b4231,color:#1b4231
+</pre>
+        </div>
+        <div class="legend"><span class="l-forest">Meta-hosted / Meta Muse</span><span class="l-sage">Tool / contract boundary</span><span class="l-blue">Muse Safety</span><span class="l-amber">P2 deferred</span></div>
+        <div class="callout" style="margin-top:12px; border-left-color:#c9a000; background:#fff8db"><strong>Muse-only enforcement:</strong> No Llama open-weight inference, no Together/Fireworks self-host. Every AI call → <code>Meta Model API (Muse)</code> with Muse Spark / Spark 1.1. Deterministic P0 path still runs offline; Muse enhances only when needed.</div>
+        <h3 class="sec">What Meta has to offer — concrete mapping (Muse-only)</h3>
+        <table>
+          <thead><tr><th style="width:26%">Meta offering</th><th style="width:34%">What it is (2026)</th><th>MiloBroker use — hackathon-tactical</th></tr></thead>
+          <tbody>
+            <tr><td><strong>WhatsApp Cloud API</strong><br><span class="tag">Transport</span></td><td>Meta-hosted Business Platform: Cloud API + Business Mgmt API + webhooks (<code>messages</code>/<code>statuses</code>). On-prem deprecated Oct 2025. Test number + temp token free. Per-conversation billing.<br><br><strong>Voice:</strong> sends <code>audio {id, mime_type: audio/ogg; codecs=opus, voice:true}</code> + media URL via <code>GET /{id}</code>. No guaranteed transcript — optional <code>transcript</code> field is best-effort/device-dependent, not business-logic reliable.</td><td><strong>Only official transport.</strong> Webhook <code>POST /webhook</code> receives inbound; <code>POST /{PHONE_ID}/messages</code> replies. For voice: download OGG → Muse transcription → feed text to same <code>SearchRequest</code> pipeline. Keep <code>fallbackWhatsAppNumber</code> when API down.</td></tr>
+            <tr><td><strong>Muse Spark 1.1</strong><br><span class="tag">Flagship — Muse</span></td><td>Meta Superintelligence Labs closed-weight frontier (Spark 1.1 Jul 2026). Highest reasoning + native vision + tool calling. API-only via Meta Model API. No downloadable weights.</td><td><strong>Primary intelligence:</strong> Ambiguous queries (“near Whitefield”), long PG listing ingestion, photo understanding (furnishing/sharing), clarifying questions, result summaries, and tool reasoning for <code>search_properties</code>. Use for high-value turns.</td></tr>
+            <tr><td><strong>Muse Spark</strong><br><span class="tag">Balanced — Muse</span></td><td>Meta Muse closed-weight (Spark Apr 2026). Frontier-class, lower latency/cost than 1.1. Same API, same tool-calling contract. No open weights.</td><td><strong>Balanced path:</strong> Simple intent, short listings, quick clarifications, and cost-sensitive turns. Router picks Spark vs 1.1 by complexity/latency budget. No Llama fallback — Spark is the fallback.</td></tr>
+            <tr><td><strong>Meta Model API</strong><br><span class="tag">Muse-only gateway</span></td><td>The only gateway for Muse: OpenAI-compatible Chat/Tool API, streaming, tool_choice <code>auto/required</code>, vision input. Hosted by Meta; no self-host.</td><td><strong>Glue:</strong> Single client for both Muse models. Define <code>search_properties</code>, <code>create_listing_draft</code>, <code>submit_listing</code>, <code>create_lead</code>, <code>handoff_to_human</code> as tools. Deterministic path bypasses this entirely for offline reliability.</td></tr>
+            <tr><td><strong>Muse Safety / Policy</strong><br><span class="tag">Safety</span></td><td>Closed-weight system-level safety in Muse (via system instructions + built-in moderation). Task-scoped to Post/Search/Promote for WhatsApp compliance.</td><td><strong>Guardrails:</strong> Pre-filter inputs + post-filter replies/listing descriptions via Muse system policy + task scope. No Llama Guard. Required for WhatsApp bot review.</td></tr>
+            <tr><td><strong>WhatsApp + Muse combo</strong><br><span class="tag">Differentiation</span></td><td>Meta owns both transport (Cloud API) and intelligence (Muse) — single vendor, single billing, single review path.</td><td><strong>Pitch line:</strong> “WhatsApp is where India negotiates rent. Muse is the intelligence that turns that chat into structured, ranked, trackable inventory — from the same Meta platform.”</td></tr>
+          </tbody>
+        </table>
+        <h3 class="sec">How we keep P0 reliable while showing Meta Muse differentiation</h3>
+        <div class="grid2">
+          <div class="callout"><strong>Pattern: Deterministic first, Muse second.</strong> Try regex/alias extraction (covers “2 BHK / 45k / Whitefield / PG sharing”) first. If confidence low or message has photos/voice/long context → call Muse Spark / 1.1 via Meta Model API. Judges see fast, explainable extraction; Muse visibly improves hard cases.</div>
+          <div class="callout blue"><strong>Policy compliance:</strong> Since Jan 15 2026 Meta prohibits general-purpose bots on WhatsApp. MiloBroker is task-scoped to <code>Post / Search / Promote</code> with <code>handoff_to_human</code> → Muse system instructions enforce it — compliant.</div>
+        </div>
+        <div class="grid3" style="margin-top:12px">
+          <div class="mini"><h4>Voice (P1-05) — WhatsApp does NOT auto-transcribe</h4><p>Webhook delivers <code>audio {id, mime_type: audio/ogg, voice:true}</code> — not text. Optional <code>transcript</code> field is best-effort only, not relied on. Backend does: <code>GET /{media-id}</code> → download OGG → Muse transcription → visible transcript → same <code>SearchRequest</code> as text. Fails twice → hide voice, show as “next”.</p></div>
+          <div class="mini"><h4>Media (P1-06)</h4><p>One image to draft; Muse Spark 1.1 vision describes furnishing/sharing; stored with draft, not auto-published until confirm.</p></div>
+          <div class="mini"><h4>Empty &amp; error</h4><p>Empty → refinement chips, no invented inventory. API failure → seeded fallback + “try again”. Muse outage → deterministic path still demos.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="system">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>4 · System Design — Modular Monolith, Real Boundaries</h2><p>One deployable, three logical services · same contracts for live WhatsApp and simulator</p></div>
+        <span class="pill">No Kafka · No K8s · No OpenSearch · No vector DB in P0</span>
+      </div>
+      <div class="card-body">
+        <div class="mermaid-wrap">
+<pre class="mermaid">
+flowchart LR
+  subgraph Client["Client layer"]
+    PUB["Public SPA<br/>src/content.ts +<br/>WhatsAppContactContext"]
+    SIMC["Simulator UI<br/>(WhatsApp chrome)"]
+    ADM["Admin UI<br/>listings · leads · funnel"]
+  end
+  subgraph API["API layer (monolith)"]
+    CONVAPI["Conversation API<br/>/api/conversation/message"]
+    SEARCHAPI["Search API<br/>/api/search"]
+    LISTAPI["Listing API<br/>/api/listings/*"]
+    LEADAPI["Lead API<br/>/api/leads"]
+  end
+  subgraph Core["Core domain"]
+    EXT["Extraction<br/>deterministic + Muse (P1)"]
+    RANK["Ranking<br/>locality · budget · recency"]
+    MOD["Moderation<br/>Muse Safety"]
+  end
+  subgraph Store["Store"]
+    PG[("Postgres<br/>listings, leads, sessions")]
+    MEM[("Seeded in-memory<br/>fallback provider")]
+  end
+  PUB --> CONVAPI
+  SIMC --> CONVAPI
+  ADM --> SEARCHAPI & LISTAPI & LEADAPI
+  CONVAPI --> EXT --> SEARCHAPI --> RANK --> PG
+  CONVAPI --> LISTAPI --> MOD --> PG
+  RANK -.-> MEM
+  SEARCHAPI -.-> MEM
+  LEADAPI --> PG
+  PG --> ADM
+  style CONVAPI fill:#1b4231,stroke:#1b4231,color:#fff
+  style SEARCHAPI fill:#1b4231,stroke:#1b4231,color:#fff
+  style LISTAPI fill:#1b4231,stroke:#1b4231,color:#fff
+  style LEADAPI fill:#1b4231,stroke:#1b4231,color:#fff
+</pre>
+        </div>
+        <div class="grid2" style="margin-top:14px">
+          <div class="mini"><h4>Deployment</h4><p>Single container/host. SPA static + API <code>/api/*</code> + <code>/webhook</code>. Local fallback: same binary with <code>USE_SEEDED_PROVIDER=1</code>. No secrets in <code>VITE_*</code>.</p></div>
+          <div class="mini"><h4>Data &amp; reset</h4><p>6+ residential/PG samples across 2–3 Bengaluru localities (Whitefield, Indiranagar, Koramangala). Reset: <code>POST /api/admin/reset</code> → known active/pending mix.</p></div>
+        </div>
+        <h3 class="sec">Non-functional — what judges actually check</h3>
+        <table>
+          <tr><th>Concern</th><th>Approach</th></tr>
+          <tr><td>Offline / Muse API down</td><td>SPA keeps <code>fallbackWhatsAppNumber</code>; simulator works with seeded provider; webhook acks in 5s even before Muse; deterministic path demos without Muse.</td></tr>
+          <tr><td>Mobile + a11y</td><td>Keep <code>tablist/tab</code>, skip link, focus rings, 320px no overflow, reduced-motion.</td></tr>
+          <tr><td>Secrets</td><td><code>WHATSAPP_TOKEN</code>, <code>VERIFY_TOKEN</code> in env only; QR via <code>qrcode</code> locally.</td></tr>
+          <tr><td>Observability</td><td>Funnel metrics from real events: searches, listings, leads, time-to-lead.</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="personas">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>5 · Persona Flows — The 5-minute North Star</h2><p>Owner → Admin → Seeker → Lead — one continuous story from reset state</p></div>
+        <span class="pill">Post (free) · Search (paid) · Promote (next, disabled)</span>
+      </div>
+      <div class="card-body">
+        <div class="grid2">
+          <div>
+            <h3 class="sec">A — Post: Owner / PG Operator (guided, resumable)</h3>
+            <div class="mermaid-wrap">
+<pre class="mermaid">
+flowchart TB
+  A["Owner: post PG in Whitefield"] --> B["Bot: PG or flat? Sharing? Rent?"]
+  B --> C["Owner: PG, double sharing, meals yes, 15k"]
+  C --> D["Bot validates: locality · sharing · rent · deposit"]
+  D --> E{"All required?"}
+  E -->|no| F["Ask next missing field"]
+  F --> C
+  E -->|yes| G["Show draft card (edit before confirm)"]
+  G --> H["Owner confirms"]
+  H --> I["Listing → pending/active + Muse Safety"]
+  I --> J["Now searchable"]
+  style G fill:#e8ece0,stroke:#1b4231,color:#1b4231
+</pre>
+            </div>
+            <p style="font-size:12px; color:var(--muted)">Draft resume (P1-04): interrupted flow resumes at last required field via session store. All moderation via Muse policy (no Llama Guard).</p>
+          </div>
+          <div>
+            <h3 class="sec">B — Search: Tenant / Buyer (extract → rank → lead)</h3>
+            <div class="mermaid-wrap">
+<pre class="mermaid">
+flowchart TB
+  A["Seeker: 2 BHK near Whitefield under 45k"] --> B["Extraction<br/>{ locality:Whitefield, bhk:2,<br/>  budget:≤45000, listingType:rent }"]
+  B --> C["Search API — rank: locality + budget"]
+  C --> D["2–3 cards — illustrative badge"]
+  D --> E["Seeker taps card"]
+  E --> F["Lead created {listingId, query, slots, ts}"]
+  F --> G["Admin sees lead + source query + slots"]
+  style B fill:#e8ece0,stroke:#1b4231,color:#1b4231
+  style F fill:#1b4231,stroke:#1b4231,color:#fff
+</pre>
+            </div>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:14px"><strong>Empty / ambiguous:</strong> Missing locality or budget → one helpful follow-up (not a loop). Empty → “Try expanding budget or nearby area” chips, never invented listings. Deterministic for P0; Muse rephrases in P1 lane.</div>
+        <div class="grid3" style="margin-top:12px">
+          <div class="mini"><h4>Admin gate</h4><p>Operator approves/activates listing. Demo can use pre-active seed — transition is still shown.</p></div>
+          <div class="mini"><h4>PG included</h4><p>PG is first-class posting/search path. PG operator uses Owners &amp; Agents guide; seeker PG prefs are slots.</p></div>
+          <div class="mini"><h4>Promote is next</h4><p>Builders see “Introduce your project — premium, ask on WhatsApp” — no builder workflow in prototype.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contracts">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>6 · Contracts &amp; Demo Script — What the team builds to</h2><p>Typed boundaries + time-boxed plan so the integrated demo — not architecture — wins</p></div>
+        <span class="pill">Build order: P0 first, Meta lane second, polish last</span>
+      </div>
+      <div class="card-body">
+        <div class="grid2">
+          <div>
+            <h3 class="sec">API contracts (keep even as monolith)</h3>
+            <table>
+              <tr><th>Method</th><th>Path</th><th>Key fields</th></tr>
+              <tr><td><code>POST</code></td><td><code>/api/conversation/message</code></td><td><code>{sessionId?, text, voiceTranscript?, imageUrl?} → {reply, extractedSlots?, results?, nextAction}</code></td></tr>
+              <tr><td><code>GET</code></td><td><code>/api/search</code></td><td><code>?locality=&bhk=&budgetMin=&budgetMax=&listingType=&pgSharing= → SearchResult[]</code></td></tr>
+              <tr><td><code>POST</code></td><td><code>/api/listings/draft</code></td><td><code>{propertyType, locality, rent/sale, deposit, pgSharing, meals} → draftId</code></td></tr>
+              <tr><td><code>POST</code></td><td><code>/api/listings/submit</code></td><td><code>{draftId} → {listingId, status: pending|active}</code></td></tr>
+              <tr><td><code>POST</code></td><td><code>/api/leads</code></td><td><code>{listingId, seekerId, query, extractedSlots} → leadId</code></td></tr>
+              <tr><td><code>POST</code></td><td><code>/api/admin/reset</code></td><td>Reseed to 6 samples + clear sessions/leads</td></tr>
+              <tr><td><code>GET/POST</code></td><td><code>/webhook</code></td><td>Meta verification + inbound <code>messages</code> events</td></tr>
+            </table>
+          </div>
+          <div>
+            <h3 class="sec">Demo script (timed, ~4:30)</h3>
+            <ol class="steps" style="padding:0; margin:0">
+              <li><strong>Problem (30s)</strong> — App-hopping for homes. MiloBroker: “No extra app. Just WhatsApp.”</li>
+              <li><strong>Post (60s)</strong> — Owner posts PG in Whitefield → draft → confirm → active.</li>
+              <li><strong>Admin (15s)</strong> — Show active/pending → approved (or pre-active seed).</li>
+              <li><strong>Search (60s)</strong> — “2 BHK near Whitefield under 45k” → slots visible → 2–3 ranked cards.</li>
+              <li><strong>Lead (30s)</strong> — Tap card → lead → admin shows lead + source query.</li>
+              <li><strong>Meta Muse lane (45s)</strong> — Same query via voice transcript + Muse Spark 1.1 vision (photo understanding), Muse Safety moderation, long PG context via Spark 1.1. Differentiation, not risk. Muse-only.</li>
+              <li><strong>Model &amp; next (30s)</strong> — Post free, Search paid, Promote premium (builders, next). “Simulator is fallback; Cloud API is the channel.”</li>
+            </ol>
+            <div class="callout amber" style="margin-top:10px">Kill-switches: WhatsApp down → simulator; voice fails twice → text; DB unstable → seeded provider; posting incomplete at 60% → perfect Search→Lead and describe Post as partial.</div>
+          </div>
+        </div>
+        <h3 class="sec">Sequencing aligned to HACKATHON_ROADMAP</h3>
+        <div class="mermaid-wrap">
+<pre class="mermaid">
+gantt
+  title Hackathon delivery
+  dateFormat  X
+  axisFormat %L
+  section Phase 0 Alignment
+  Freeze story & contracts       :a1, 0, 10
+  section Phase 1 Skeleton
+  Conv → Search → Lead skeleton  :a2, 10, 30
+  section Phase 2 Core
+  Guided Post + ranking + errors :a3, 30, 60
+  section Phase 3 Polish
+  Site handoff + Meta lane + a11y :a4, 60, 80
+  section Phase 4 Hardening
+  Freeze + rehearsals + fallback  :a5, 80, 95
+  section Phase 5 Pitch
+  Submission & pitch              :a6, 95, 100
+</pre>
+        </div>
+        <h3 class="sec">What we explicitly do NOT build for the judged demo</h3>
+        <div class="grid3">
+          <div class="mini"><h4>Not in P0/P1</h4><p>Vector DB / embeddings / OpenSearch / Kafka / K8s / warehouse / microservices / payment gateway / full KYC.</p></div>
+          <div class="mini"><h4>Not claimed</h4><p>Live inventory, verified listings, guaranteed leads, exact prices, production readiness. All samples “illustrative”.</p></div>
+          <div class="mini"><h4>File location</h4><p>This flowchart: <code>/hackathon/MiloBroker_Meta_Hackathon_Flowchart.html</code> (hackathon root) · mirrored at <code>milobroker-public-site/docs/</code>.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <div class="card-head"><h2>7 · Quick reference — SPA → Prototype → Muse (Muse-only)</h2></div>
+      <div class="card-body">
+        <table>
+          <tr><th>Layer</th><th>Current SPA</th><th>P0 Prototype (judged)</th><th>Meta Muse enhancement (closed-weight only)</th></tr>
+          <tr><td><strong>Entry</strong></td><td>Marketing site + <code>wa.me</code></td><td>Site CTA → Simulator (+ live WhatsApp if stable)</td><td>WhatsApp Cloud API webhook (Meta-hosted)</td></tr>
+          <tr><td><strong>Understanding</strong></td><td>Prefilled text, human</td><td>Deterministic extraction</td><td>Muse Spark 1.1 / Spark via Meta Model API + tool calling; STT → Muse for voice</td></tr>
+          <tr><td><strong>Search</strong></td><td>None</td><td>Search API → Postgres / seeded provider, ranked</td><td>pgvector future (deferred); Muse reranks explanation only</td></tr>
+          <tr><td><strong>Trust</strong></td><td>Disclaimer only</td><td>pending/active, illustrative labels</td><td>Muse Safety (system policy) — no Llama Guard</td></tr>
+          <tr><td><strong>Outcome</strong></td><td>Manual reply</td><td>Lead API → Admin + funnel</td><td>Template re-engagement (24h window) via Cloud API</td></tr>
+        </table>
+        <div class="callout blue" style="margin-top:12px"><strong>For the pitch:</strong> Copy the hero KPIs + the system design lane diagram. One glance shows: <em>WhatsApp → Conversation API → Search API → Postgres → Lead → Admin</em>, with <strong>Meta Muse (Spark 1.1 / Spark, closed-weight)</strong> as the intelligence lane that upgrades — not replaces — the deterministic core. No Llama open weights anywhere.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div>MiloBroker — Maven RealtyxAI (OPC) Pvt Ltd · Post, Search. All through WhatsApp. · Samples &amp; conversations are illustrative.</div>
+  <div style="margin-top:6px">Flowchart: <code>C:\Users\admin\Documents\hackathon\MiloBroker_Meta_Hackathon_Flowchart.html</code> · Mirrored at <code>docs/MiloBroker_Meta_Hackathon_Flowchart.html</code> for preview serving.</div>
+</footer>
+
+<script>
+  // Local-only mermaid init: if docs/assets/mermaid.min.js is missing, `typeof mermaid`
+  // is undefined and the page stays readable as plain <pre> blocks — no CDN fetch.
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({ startOnLoad:true, theme:'base', themeVariables:{ primaryColor:'#e8ece0', primaryTextColor:'#1b4231', primaryBorderColor:'#1b4231', lineColor:'#1b4231', secondaryColor:'#fdf8ee', tertiaryColor:'#fff4d6', fontFamily:'system-ui, Segoe UI, Roboto, Helvetica, Arial', fontSize:'13px' }, flowchart:{ curve:'basis', padding:8, nodeSpacing:18, rankSpacing:22, htmlLabels:true }});
+  }
+  setTimeout(function(){
+    var rendered = typeof mermaid !== 'undefined' && document.querySelector('.mermaid svg');
+    if(!rendered){
+      document.querySelectorAll('.mermaid').forEach(function(el){
+        el.style.whiteSpace='pre-wrap'; el.style.fontFamily='ui-monospace,monospace'; el.style.fontSize='11px'; el.style.background='white'; el.style.border='1px solid #ddd8c8'; el.style.borderRadius='10px'; el.style.padding='10px';
+      });
+    }
+  }, 500);
+</script>
+</body>
+</html>

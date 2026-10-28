@@ -39,8 +39,8 @@ export function FaqSection() {
           {/* Click, Enter or Space toggles each native disclosure independently. */}
           {faqs.map(([question, answer]) => (
             <details key={question}>
-              <summary>{question}<span aria-hidden="true">+</span></summary>
-              <p>{answer.replace("{phone}", whatsappPhoneNumber)}</p>
+              <summary className="text-lg">{question}<span aria-hidden="true">+</span></summary>
+              <p  className="text-lg">{answer.replace("{phone}", whatsappPhoneNumber)}</p>
             </details>
           ))}
         </div>
@@ -48,9 +48,9 @@ export function FaqSection() {
       <section className="page-container mt-6 flex flex-col items-start gap-7 rounded-2xl bg-forest p-6 text-white sm:p-10 lg:flex-row lg:items-center lg:justify-between [&_p]:text-white/90" aria-labelledby="contact-title">
         <div>
           <h2 id="contact-title">{faqContent.contactHeading}</h2>
-          <p className="pb-4">{faqContent.contactDescription}</p>
+          <p className="pb-4 text-lg">{faqContent.contactDescription}</p>
           {/* Opens a prefilled enquiry in a new tab; the user decides whether to send it. */}
-          <a className="button w-full shrink-0 bg-[#e8efda] text-forest hover:bg-white sm:w-auto" href={whatsappChatUrl} target="_blank" rel="noopener noreferrer">
+          <a className="button w-full shrink-0 bg-[#e8efda] text-forest hover:bg-white sm:w-auto text-lg" href={whatsappChatUrl} target="_blank" rel="noopener noreferrer">
             <i className="bi bi-whatsapp" aria-hidden="true" />{common.chat}<span className="sr-only">{common.newTab}</span>
           </a>
         </div>

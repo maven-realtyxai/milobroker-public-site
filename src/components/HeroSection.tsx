@@ -56,16 +56,16 @@ export function HeroSection() {
           {hero.heading}<br /><em className="font-serif font-normal text-olive">{hero.accent}</em>
         </h1>
         <p className="mt-4 text-2xl font-semibold tracking-tight text-forest sm:text-3xl">{hero.promise}</p>
-        <p className="mx-auto mt-3 max-w-[70ch] text-base leading-relaxed md:mx-0">
+        <p className="mx-auto mt-3 max-w-[70ch] text-lg leading-relaxed md:mx-0">
           {hero.introduction}<br /><i>{brandName}</i> {hero.description}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-4 md:justify-start">
           {/* Opens a reviewable enquiry in a new tab; no message is sent here. */}
-          <a className="button" href={whatsappChatUrl} target="_blank" rel="noopener noreferrer">
+          <a className="button text-lg" href={whatsappChatUrl} target="_blank" rel="noopener noreferrer">
             <i className="bi bi-whatsapp" aria-hidden="true" />{common.chat}<span className="sr-only">{common.newTab}</span>
           </a>
           {/* Native section link respects the shared reduced-motion scroll setting. */}
-          <a className="nav-link gap-3" href="#how-it-works">{hero.guideLink}</a>
+          <a className="nav-link gap-3 text-lg" href="#how-it-works">{hero.guideLink}</a>
         </div>
       </div>
       <figure className="mx-auto grid w-full max-w-lg justify-items-center" role="region" aria-roledescription="carousel" aria-label={hero.carouselLabel}

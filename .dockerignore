@@ -1,0 +1,19 @@
+# Allow only build inputs; exclude local env files, credentials and legacy files.
+**
+!package.json
+!package-lock.json
+!index.html
+!tsconfig.json
+!vite.config.ts
+!playwright.config.ts
+!src/
+!src/**
+!tests/
+!tests/**
+!public/
+!public/**
+!deploy/
+!deploy/nginx.conf
+!Dockerfile
+!.dockerignore
+

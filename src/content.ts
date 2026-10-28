@@ -66,18 +66,18 @@ export const hero = {
 };
 
 /** Used by the header. Keep the adjacent product name as accessible text. */
-export const brandIcon = new URL("./resources/images/milobroker-icon.svg", import.meta.url).pathname;
+export const brandIcon = new URL("./resources/images/milobroker-icon.svg", import.meta.url).href;
 
 /** @type {[{label: string, image: string, imageAlt: string}, ...{label: string, image: string, imageAlt: string}[]]} */
 export const heroSlides = [
   {
     label: "Owners & Agents",
-    image: new URL("./resources/images/milobroker-post.svg", import.meta.url).pathname,
+    image: new URL("./resources/images/milobroker-post.svg", import.meta.url).href,
     imageAlt: `Sample ${brandName} chat: an owner posts a semi-furnished 2 BHK near Indiranagar metro for Rs.42,000 per month, with two photos and a confirmation.`,
   },
   {
     label: "Tenants & Buyers",
-    image: new URL("./resources/images/milobroker-search.svg", import.meta.url).pathname,
+    image: new URL("./resources/images/milobroker-search.svg", import.meta.url).href,
     imageAlt: `Sample ${brandName} chat: a tenant searches for a 2 BHK in Indiranagar and receives an illustrative property card with a Contact owner row.`,
   },
   // {
@@ -91,7 +91,7 @@ export const heroSlides = [
 export const guide = {
   eyebrow: "HOW IT WORKS",
   heading: "Your goal. Your next step.",
-  introduction: "Choose your role to see how posting, search or promotion works.",
+  introduction: "Choose your role to see how posting and search works.",
   tabLabel: "Choose your property journey",
   forRole: "FOR {role}",
   messageLabel: "YOUR FIRST MESSAGE",

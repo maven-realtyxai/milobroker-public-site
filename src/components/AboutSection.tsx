@@ -29,14 +29,14 @@ export function AboutSection() {
                     {service.name}
                   </h3>
                 </div>
-                <p className="mb-3 text-sm font-semibold tracking-wide text-olive">
+                <p className="mb-3 text-lg font-semibold tracking-wide text-olive">
                   {service.audience}
                 </p>
                 <h4 className="mb-4 text-xl">{service.headline}</h4>
-                <p className="mb-6 leading-relaxed">{service.description}</p>
+                <p className="mb-6 text-lg leading-relaxed">{service.description}</p>
                 {/* Each action opens a service-specific WhatsApp enquiry; it does not post, search, pay or advertise automatically. */}
                 <a
-                  className="nav-link mt-auto gap-2 self-start px-0 text-forest"
+                  className="nav-link mt-auto gap-2 self-start px-0 text-forest text-lg"
                   href={createWhatsAppUrl(service.enquiry)}
                   target="_blank"
                   rel="noopener noreferrer"
