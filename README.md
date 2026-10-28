@@ -64,7 +64,7 @@ Expected JSON (including quotes around all keys):
 
 ```json
 {
-  "whatsappPhoneNumber": "8123995310",
+  "whatsappPhoneNumber": "812****310",
   "country": "IN",
   "countryCode": "+91"
 }
