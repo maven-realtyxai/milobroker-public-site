@@ -1,5 +1,7 @@
 # Deployment workshop
 
+> For the selected EC2 + Docker + NGINX starter deployment, GitHub Actions setup, AWS prerequisites, and safe tagged releases, see [CI/CD and deployment options](CICD_DEPLOYMENT_OPTIONS.md) and the [EC2 deployment guide](EC2_DEPLOYMENT.md). This Docker/Kubernetes workshop remains an optional future path.
+
 ## Stage 1: run the site in local Docker
 
 The React source is the recipe. `npm run build` makes the finished static files.
