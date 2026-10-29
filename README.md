@@ -94,10 +94,24 @@ variables: these are public build-time settings. Old Express `DATABASE_URL`,
 
 ## Deploy
 
+Production hosting uses **GitHub release tag → AWS CodePipeline → CodeBuild →
+S3 → CloudFront**. CodeBuild builds the Vite app, syncs `dist/` to the `website/`
+prefix in the pipeline artifact bucket, and invalidates CloudFront after upload.
+The site is served by CloudFront from a private S3 REST origin protected by OAC.
+This deployment does not use EC2, GitHub Actions deployment, Docker, NGINX, or
+Kubernetes. GitHub Actions in `.github/workflows/ci.yml` validates PRs and pushes
+to `main`; it does not publish the site.
+
+Set the CodeBuild environment variables `WEBSITE_BUCKET` and
+`CLOUDFRONT_DISTRIBUTION_ID`, then configure CodePipeline to trigger only on
+version tags matching `v*`. Tag only a clean commit on `main` after its CI check
+passes. See [the AWS deployment guide](docs/HOSTING_MILOBROKER.md) for AWS setup,
+DNS/TLS, IAM, the single-bucket layout, release and rollback steps, and cleanup.
+
 For a local Docker rehearsal, run `docker compose up -d --build --wait` and open
 http://127.0.0.1:8080. Docker Desktop must be running with Linux containers.
-See [the deployment workshop](docs/DEPLOYMENT.md) for commands, configuration
-limitations and the staged AWS/domain setup plan.
+See [the deployment workshop](docs/LOCAL_DEPLOYMENT.md); its Docker section is
+for local learning only.
 
 Run `npm ci` and `npm run build`, then serve **dist/** from a static web host or your
 Java server. `npm run preview` is a local build check, not the production server.
