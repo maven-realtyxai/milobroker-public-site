@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm ci
+  build:
+    commands:
+      - npm run build          # outputs to ./dist or ./build
+  post_build:
+    commands:
+      # Sync build output to S3
+      - aws s3 sync ./dist s3://my-website-artifacts --delete
+      # Invalidate CloudFront cache so changes go live immediately
+      - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DIST_ID --paths "/*"
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
