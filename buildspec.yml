@@ -12,7 +12,7 @@ phases:
   post_build:
     commands:
       # Sync build output to S3
-      - aws s3 sync ./dists3://milobroker-public-site-084767318881-ap-southeast-2-an --delete
+      - aws s3 sync ./dist s3://milobroker-public-site-084767318881-ap-southeast-2-an --delete
       # Invalidate CloudFront cache so changes go live immediately
       - aws cloudfront create-invalidation --distribution-id E1AKHJV8BTP0U1 --paths "/*"
 
