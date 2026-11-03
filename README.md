@@ -45,35 +45,35 @@ No listing, upload, ad-save or property-posting operation occurs in the mockups.
 
 ## Connect Java
 
-Create `.env.local` (see `.env` for the keys) and set the public endpoint.
-`src/service/contact.ts` reads `CONTACT_API_URL` and an optional `BASE_API_URL`
-(which may be a full URL or a path resolved against the base):
+Copy `.env.example` to `.env.local` and set the public endpoint.
+`src/services/contact.ts` reads `VITE_CONTACT_API_URL` and an optional
+`VITE_BASE_API_URL` (which may be a full URL or a path resolved against the base).
+The `countryIso2` query is appended at request time from `VITE_COUNTRY_ISO2`
+(default `DF`), so the configured endpoint stays a plain path:
 
 ```dotenv
-BASE_API_URL=https://your-java-host.example
-CONTACT_API_URL=/api/contact
+VITE_BASE_API_URL=http://localhost:8083
+VITE_CONTACT_API_URL=/api/contact
+VITE_COUNTRY_ISO2=DF
 ```
 
-The checked-in `.env` currently ships `VITE_BASE_SERVICE_URL` and
-`VITE_CONTACT_API_URL` placeholders — align them with the names above when you
-configure the endpoint. Vite only exposes `VITE_` variables to the browser, so
-restart dev after editing env files; rebuild before deployment when the endpoint
-changes.
+Vite only exposes `VITE_` variables to the browser, so restart dev after
+editing env files; rebuild before deployment when the endpoint changes.
 
 Expected JSON (including quotes around all keys):
 
 ```json
 {
-  "whatsappPhoneNumber": "812****310",
-  "country": "IN",
-  "countryCode": "+91"
+  "countryCode": "DF",
+  "whatsappPhoneNumber": "+155*****198"
 }
 ```
 
-The phone field is the **national number**, without its country code. The frontend
-combines `countryCode` and `whatsappPhoneNumber` into `918123995310`. `country` is
-informational; the explicit calling code controls the destination. Keep both number
-fields as strings. Responses with missing, malformed or overlong numbers are ignored.
+The phone field carries the full number and may include a leading `+` (E.164) or
+arrive as plain digits. The frontend strips every non-digit and uses the result
+(`15556780198`) for the WhatsApp link. `countryCode` and `country` are informational
+only. Keep the fields as strings. Responses with missing, malformed or overlong
+numbers are ignored.
 
 `src/service/contact.ts` uses native `fetch`, without Axios or a proxy. The small shared
 provider in `src/context/WhatsAppContactContext.tsx` loads it on page mount and gives
@@ -86,9 +86,11 @@ keeps `fallbackWhatsAppNumber` from `src/content.ts`. The fallback is available 
 Confirm the business recipient before publishing. The QR is generated locally with
 [qrcode](https://github.com/soldair/node-qrcode), so there is no external QR image service.
 
-For another origin, Java must allow this website's origin through CORS. The request
-is public and sends no cookies or authorization header. Use HTTPS for the production
-API when the site is HTTPS. Never put database credentials or private keys in `VITE_*`
+For another origin, Java must allow this website's origin through CORS — including
+`http://localhost:4173` (and `http://127.0.0.1:4173`) during local development,
+otherwise the browser blocks the response. The request is public and sends no
+cookies or authorization header, so `Access-Control-Allow-Origin: *` is sufficient.
+Use HTTPS for the production API when the site is HTTPS. Never put database credentials or private keys in `VITE_*`
 variables: these are public build-time settings. Old Express `DATABASE_URL`,
 `PORT` and `WHATSAPP_SEED_NUMBER` settings are no longer used.
 

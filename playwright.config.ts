@@ -22,8 +22,9 @@ export default defineConfig({
     url: "http://127.0.0.1:4173",
     reuseExistingServer: false,
     env: {
-      BASE_API_URL: "http://127.0.0.1:8080",
-      CONTACT_API_URL: "/api/contact",
+      VITE_BASE_API_URL: "http://127.0.0.1:8080",
+      VITE_CONTACT_API_URL: "/api/contact",
+      VITE_COUNTRY_ISO2: "DF",
     },
   },
 });

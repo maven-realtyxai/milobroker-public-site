@@ -10,9 +10,10 @@ const headings = [
 
 test.beforeEach(async ({ page }) => {
   // All API responses are local fixtures. Tests never contact Java or message the business.
-  await page.route("**/api/contact", (route) => route.fulfill({
+  // The trailing wildcard keeps the stub matched when the contact URL carries a query string.
+  await page.route("**/api/contact*", (route) => route.fulfill({
     contentType: "application/json",
-    body: JSON.stringify({ whatsappPhoneNumber: "8123995310", country: "IN", countryCode: "+91" }),
+    body: JSON.stringify({ whatsappPhoneNumber: "+918123995310", country: "IN", countryCode: "+91" }),
   }));
   await page.goto("/");
 });
@@ -151,11 +152,11 @@ test("WhatsApp links use the number served by the contact API", async ({
 }) => {
   // Stub the Java contact API with a different national number, then reload:
   // every wa.me link must be rebuilt from the served number, not the fallback.
-  await page.route("**/api/contact", (route) =>
+  await page.route("**/api/contact*", (route) =>
     route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({
-        whatsappPhoneNumber: "1234567890",
+        whatsappPhoneNumber: "+911234567890",
         country: "IN",
         countryCode: "+91",
       }),
@@ -183,16 +184,46 @@ test("WhatsApp links use the number served by the contact API", async ({
   await expect(page.locator('img[alt*="QR code"]')).toHaveAttribute("src", /^data:image\/png;base64,/);
 });
 
+/** The country selector travels as a query string appended at request time, not baked into the endpoint. */
+test("contact request appends the countryIso2 query dynamically", async ({ page }) => {
+  let requestedIso = "";
+  await page.route("**/api/contact*", (route) => {
+    requestedIso = new URL(route.request().url()).searchParams.get("countryIso2") ?? "";
+    return route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ whatsappPhoneNumber: "+918123995310", country: "IN", countryCode: "+91" }),
+    });
+  });
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+  expect(requestedIso).toBe("DF");
+});
+
+/** The API may return the full E.164 number with a leading plus; it is used as-is. */
+test("contact accepts an E.164 number with a plus prefix", async ({ page }) => {
+  await page.route("**/api/contact*", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ countryCode: "DF", whatsappPhoneNumber: "+15556780198" }),
+    }),
+  );
+  await page.reload();
+  const chatLink = page
+    .getByRole("link", { name: /Chat on WhatsApp/ })
+    .first();
+  await expect(chatLink).toHaveAttribute("href", /^https:\/\/wa\.me\/15556780198\?text=/);
+});
+
 for (const [name, body] of [
   ["missing fields", {}],
   ["invalid number", { whatsappPhoneNumber: "8123<script>", countryCode: "+91" }],
   ["missing country code", { whatsappPhoneNumber: "8123995310", country: "IN" }],
-  ["invalid country code", { whatsappPhoneNumber: "8123995310", countryCode: "javascript:" }],
-  ["too many digits", { whatsappPhoneNumber: "12345678901234", countryCode: "+123" }],
+  ["invalid country code", { whatsappPhoneNumber: "8123995310", countryCode: 91 }],
+  ["too many digits", { whatsappPhoneNumber: "1234567890123456", countryCode: "+123" }],
   ["null response", null],
 ] as const) {
   test(`contact uses fallback for ${name}`, async ({ page }) => {
-    await page.route("**/api/contact", (route) => route.fulfill({ contentType: "application/json", body: JSON.stringify(body) }));
+    await page.route("**/api/contact*", (route) => route.fulfill({ contentType: "application/json", body: JSON.stringify(body) }));
     await page.reload();
     await page.waitForLoadState("networkidle");
     await expect(page.locator("#home a[href^='https://wa.me/']")).toHaveAttribute("href", /^https:\/\/wa\.me\/918123995310\?text=/);
@@ -201,7 +232,7 @@ for (const [name, body] of [
 
 test("contact keeps the fallback after an offline API, HTTP error or invalid JSON", async ({ page }) => {
   for (const mode of ["offline", "error", "json"]) {
-    await page.route("**/api/contact", (route) => mode === "offline"
+    await page.route("**/api/contact*", (route) => mode === "offline"
       ? route.abort()
       : route.fulfill({ status: mode === "error" ? 503 : 200, contentType: "application/json", body: "not JSON" }));
     await page.reload();
@@ -211,9 +242,9 @@ test("contact keeps the fallback after an offline API, HTTP error or invalid JSO
 });
 
 test("slow API is aborted while the fallback links remain usable", async ({ page }) => {
-  await page.route("**/api/contact", () => { /* Hold the response until the client cancels it. */ });
+  await page.route("**/api/contact*", () => { /* Hold the response until the client cancels it. */ });
   const started = Date.now();
-  const aborted = page.waitForEvent("requestfailed", { predicate: (request) => request.url().endsWith("/api/contact") && Date.now() - started >= 4500, timeout: 10_000 });
+  const aborted = page.waitForEvent("requestfailed", { predicate: (request) => request.url().includes("/api/contact") && Date.now() - started >= 4500, timeout: 10_000 });
   await page.reload();
   await expect(page.locator("#home a[href^='https://wa.me/']")).toHaveAttribute("href", /^https:\/\/wa\.me\/918123995310\?text=/);
   await aborted;
