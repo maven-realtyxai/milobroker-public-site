@@ -7,6 +7,5 @@
 interface ImportMetaEnv {
   readonly VITE_BASE_API_URL?: string;
   readonly VITE_CONTACT_API_URL?: string;
-  readonly BASE_API_URL?: string;
-  readonly CONTACT_API_URL?: string;
+  readonly VITE_COUNTRY_ISO2?: string;
 }

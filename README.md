@@ -45,20 +45,20 @@ No listing, upload, ad-save or property-posting operation occurs in the mockups.
 
 ## Connect Java
 
-Create `.env.local` (see `.env` for the keys) and set the public endpoint.
-`src/service/contact.ts` reads `CONTACT_API_URL` and an optional `BASE_API_URL`
-(which may be a full URL or a path resolved against the base):
+Copy `.env.example` to `.env.local` and set the public endpoint.
+`src/services/contact.ts` reads `VITE_CONTACT_API_URL` and an optional
+`VITE_BASE_API_URL` (which may be a full URL or a path resolved against the base).
+The `countryIso2` query is appended at request time from `VITE_COUNTRY_ISO2`
+(default `DF`), so the configured endpoint stays a plain path:
 
 ```dotenv
-BASE_API_URL=https://your-java-host.example
-CONTACT_API_URL=/api/contact
+VITE_BASE_API_URL=http://localhost:8083
+VITE_CONTACT_API_URL=/api/contact
+VITE_COUNTRY_ISO2=DF
 ```
 
-The checked-in `.env` currently ships `VITE_BASE_SERVICE_URL` and
-`VITE_CONTACT_API_URL` placeholders — align them with the names above when you
-configure the endpoint. Vite only exposes `VITE_` variables to the browser, so
-restart dev after editing env files; rebuild before deployment when the endpoint
-changes.
+Vite only exposes `VITE_` variables to the browser, so restart dev after
+editing env files; rebuild before deployment when the endpoint changes.
 
 Expected JSON (including quotes around all keys):
 
