@@ -134,7 +134,7 @@ export const footer = {
 };
 
 /** Used by the header, hero and contact section. */
-export const generalEnquiryMessage = `Hi ${brandName}, I’d like help posting a property or PG room, finding a place, or promoting a project.`;
+export const generalEnquiryMessage = `Hi ${brandName}, I’d like help posting a property or PG room, finding a place.`;
 
 /** Welcoming service copy shared by feature cards and role enquiries.
  * Pricing is explained in the FAQ; do not add fee badges or imply every service is free.
@@ -158,7 +158,7 @@ export const platformServices = {
       "A home to rent, a place to buy or a PG room for your next chapter. Tell us your preferred area, budget and what makes a place feel right.",
     cta: "Start your search",
     enquiry:
-      `Hi ${brandName}, I’m looking for a home or PG room. I’d like to share my preferences and learn how to get started.`,
+      `Hi ${brandName}, I’m looking for a 2 bhk house for rent. I’d like to share my preferences and learn how to get started.`,
   },
   // promote: {
   //   name: "Promote",

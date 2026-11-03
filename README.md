@@ -64,16 +64,16 @@ Expected JSON (including quotes around all keys):
 
 ```json
 {
-  "whatsappPhoneNumber": "8123995310",
-  "country": "IN",
-  "countryCode": "+91"
+  "countryCode": "DF",
+  "whatsappPhoneNumber": "+15556780198"
 }
 ```
 
-The phone field is the **national number**, without its country code. The frontend
-combines `countryCode` and `whatsappPhoneNumber` into `918123995310`. `country` is
-informational; the explicit calling code controls the destination. Keep both number
-fields as strings. Responses with missing, malformed or overlong numbers are ignored.
+The phone field carries the full number and may include a leading `+` (E.164) or
+arrive as plain digits. The frontend strips every non-digit and uses the result
+(`15556780198`) for the WhatsApp link. `countryCode` and `country` are informational
+only. Keep the fields as strings. Responses with missing, malformed or overlong
+numbers are ignored.
 
 `src/service/contact.ts` uses native `fetch`, without Axios or a proxy. The small shared
 provider in `src/context/WhatsAppContactContext.tsx` loads it on page mount and gives
@@ -86,9 +86,11 @@ keeps `fallbackWhatsAppNumber` from `src/content.ts`. The fallback is available 
 Confirm the business recipient before publishing. The QR is generated locally with
 [qrcode](https://github.com/soldair/node-qrcode), so there is no external QR image service.
 
-For another origin, Java must allow this website's origin through CORS. The request
-is public and sends no cookies or authorization header. Use HTTPS for the production
-API when the site is HTTPS. Never put database credentials or private keys in `VITE_*`
+For another origin, Java must allow this website's origin through CORS — including
+`http://localhost:4173` (and `http://127.0.0.1:4173`) during local development,
+otherwise the browser blocks the response. The request is public and sends no
+cookies or authorization header, so `Access-Control-Allow-Origin: *` is sufficient.
+Use HTTPS for the production API when the site is HTTPS. Never put database credentials or private keys in `VITE_*`
 variables: these are public build-time settings. Old Express `DATABASE_URL`,
 `PORT` and `WHATSAPP_SEED_NUMBER` settings are no longer used.
 

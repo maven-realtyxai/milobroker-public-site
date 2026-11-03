@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   // The trailing wildcard keeps the stub matched when the contact URL carries a query string.
   await page.route("**/api/contact*", (route) => route.fulfill({
     contentType: "application/json",
-    body: JSON.stringify({ whatsappPhoneNumber: "8123995310", country: "IN", countryCode: "+91" }),
+    body: JSON.stringify({ whatsappPhoneNumber: "+918123995310", country: "IN", countryCode: "+91" }),
   }));
   await page.goto("/");
 });
@@ -156,7 +156,7 @@ test("WhatsApp links use the number served by the contact API", async ({
     route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({
-        whatsappPhoneNumber: "1234567890",
+        whatsappPhoneNumber: "+911234567890",
         country: "IN",
         countryCode: "+91",
       }),
@@ -191,7 +191,7 @@ test("contact request appends the countryIso2 query dynamically", async ({ page 
     requestedIso = new URL(route.request().url()).searchParams.get("countryIso2") ?? "";
     return route.fulfill({
       contentType: "application/json",
-      body: JSON.stringify({ whatsappPhoneNumber: "8123995310", country: "IN", countryCode: "+91" }),
+      body: JSON.stringify({ whatsappPhoneNumber: "+918123995310", country: "IN", countryCode: "+91" }),
     });
   });
   await page.reload();
@@ -199,12 +199,27 @@ test("contact request appends the countryIso2 query dynamically", async ({ page 
   expect(requestedIso).toBe("DF");
 });
 
+/** The API may return the full E.164 number with a leading plus; it is used as-is. */
+test("contact accepts an E.164 number with a plus prefix", async ({ page }) => {
+  await page.route("**/api/contact*", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ countryCode: "DF", whatsappPhoneNumber: "+15556780198" }),
+    }),
+  );
+  await page.reload();
+  const chatLink = page
+    .getByRole("link", { name: /Chat on WhatsApp/ })
+    .first();
+  await expect(chatLink).toHaveAttribute("href", /^https:\/\/wa\.me\/15556780198\?text=/);
+});
+
 for (const [name, body] of [
   ["missing fields", {}],
   ["invalid number", { whatsappPhoneNumber: "8123<script>", countryCode: "+91" }],
   ["missing country code", { whatsappPhoneNumber: "8123995310", country: "IN" }],
-  ["invalid country code", { whatsappPhoneNumber: "8123995310", countryCode: "javascript:" }],
-  ["too many digits", { whatsappPhoneNumber: "12345678901234", countryCode: "+123" }],
+  ["invalid country code", { whatsappPhoneNumber: "8123995310", countryCode: 91 }],
+  ["too many digits", { whatsappPhoneNumber: "1234567890123456", countryCode: "+123" }],
   ["null response", null],
 ] as const) {
   test(`contact uses fallback for ${name}`, async ({ page }) => {

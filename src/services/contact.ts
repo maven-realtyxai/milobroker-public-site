@@ -15,7 +15,7 @@ const baseApiUrl =
 const defaultCountryIso2 =
   (import.meta.env.VITE_COUNTRY_ISO2?.trim() || import.meta.env.COUNTRY_ISO2?.trim() || "DF");
 
-/** Read the Java contact; combine its country code and national number for WhatsApp.
+/** Read the Java contact; use its WhatsApp number (E.164 with `+` or plain digits).
  * This is the ONLY `fetch` in the app. All other assets (fonts, icons, images,
  * styles) are bundled locally from `node_modules`/`src` — no CDN, no third-party calls.
  * @param signal Aborts the request on unmount or after the caller times out.
@@ -48,11 +48,14 @@ export async function fetchContact(signal: AbortSignal, countryIso2: string = de
       return fallbackWhatsAppNumber;
     }
     const { whatsappPhoneNumber, countryCode } = data;
-    if (typeof whatsappPhoneNumber !== "string" || !/^\d{4,14}$/.test(whatsappPhoneNumber) ||
-        typeof countryCode !== "string" || !/^\+[1-9]\d{0,2}$/.test(countryCode)) {
+    // The number may arrive as E.164 ("+15556780198") or plain digits; it already
+    // carries its own country prefix. countryCode is required by the envelope but
+    // informational — it is never built into the link.
+    if (typeof whatsappPhoneNumber !== "string" || typeof countryCode !== "string") {
       return fallbackWhatsAppNumber;
     }
-    return /^[1-9]\d{7,14}$/.test(whatsappPhoneNumber) ? whatsappPhoneNumber : fallbackWhatsAppNumber;
+    const digits = whatsappPhoneNumber.replace(/\D/g, "");
+    return /^[1-9]\d{7,14}$/.test(digits) ? digits : fallbackWhatsAppNumber;
   } catch {
     // Offline, timeout or invalid JSON: existing links keep working.
     return fallbackWhatsAppNumber;

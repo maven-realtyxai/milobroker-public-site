@@ -3,7 +3,7 @@ services:
   site:
     build:
       context: .
-    image: milobroker-public-site:local
+    image: milobroker-public-site:prod
     ports:
       - "127.0.0.1:8080:8080"
     read_only: true
