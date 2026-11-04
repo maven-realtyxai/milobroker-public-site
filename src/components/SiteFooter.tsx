@@ -1,4 +1,4 @@
-import { brandName, footer, navigation } from "../content.js";
+import { brandName, common, footer, navigation } from "../content.js";
 import { DisclaimerSection } from "./DisclaimerSection";
 
 /** Section links, the platform notice and the current legal ownership line. */
@@ -18,6 +18,14 @@ export function SiteFooter() {
       <DisclaimerSection />
       <div className="flex flex-col gap-3 border-t border-line py-6 text-sm lg:flex-row lg:justify-between [&_p]:text-sm">
         <p>{footer.copyright.replace("{year}", String(new Date().getFullYear()))}</p>
+        {/* Legal documents open separately so visitors can keep their place on the site. */}
+        <nav aria-label="Legal">
+          {footer.legalLinks.map((link) => (
+            <a className="ml-2 no-underline hover:underline" key={link.href} href={`${import.meta.env.BASE_URL}${link.href}`} target="_blank" rel="noopener noreferrer" aria-label={`${link.label}${common.newTab}`}>
+              {link.label}
+            </a>
+          ))}
+        </nav>
       </div>
     </footer>
   );

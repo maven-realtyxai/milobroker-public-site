@@ -18,6 +18,18 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
+test("footer legal links open the supplied documents in a new tab", async ({ page }) => {
+  for (const title of ["Privacy Policy", "Terms of Use"]) {
+    const link = page.getByRole("link", { name: `${title} (opens in a new tab)` });
+    await expect(link).toHaveAttribute("target", "_blank");
+    const popupPromise = page.waitForEvent("popup");
+    await link.click();
+    const popup = await popupPromise;
+    await expect(popup.getByRole("heading", { level: 1 })).toHaveText(title);
+    await popup.close();
+  }
+});
+
 test("home has the new brand, one clear heading, and a labelled sample chat", async ({
   page,
 }) => {

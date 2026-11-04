@@ -120,6 +120,10 @@ export const faqContent = {
 /** Used by SiteFooter and DisclaimerSection. The year is supplied by the component. */
 export const footer = {
   tagline: "Post, Search. All through WhatsApp.",
+  legalLinks: [
+    { href: "legal/privacy-policy.html", label: "Privacy Policy" },
+    { href: "legal/terms.html", label: "Terms of Use" },
+  ],
   copyright: `All rights reserved. © {year} ${brandName} owned by Maven RealtyxAI (OPC) Pvt Ltd.`,
   disclaimerTitle: "Disclaimer",
   disclaimer: `${brandName} is a platform that helps users begin property-related 
